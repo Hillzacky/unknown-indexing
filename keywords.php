@@ -17,6 +17,15 @@
     return ($err)?$err:$out;
   }
   
+  static function trendDaily($lang='id',$country='ID',$tz='-420',$ns=15){
+    $response = file_get_contents("https://trends.google.com/trends/api/dailytrends?hl=$lang&geo=$country&tz=$tz&ns=$ns");
+    $result = json_decode(trim(substr($response, 5)));
+    foreach($result->default->trendingSearchesDays[0]->trendingSearches as $td){
+      $data[] = $td->title->query;
+    }
+    return $data;
+  }
+  
   static function amazon($query, $opt=[]){
     $response = static::req('https://completion.amazon.com/search/complete?mkt=1&search-alias=aps&q='.urlencode($query), $opt);
     return json_decode($response)[1];
@@ -34,6 +43,7 @@
   }
   
   static function google($query, $opt=[]){
+    // &hl=lang&gl=country&ds=source
     $xml = static::req('https://suggestqueries.google.com/complete/search?output=toolbar&q='.urlencode($query), $opt);
     $xml = simplexml_load_string(utf8_encode($xml));
     foreach ($xml as $sugg) $data[] = (string) $sugg->suggestion->attributes()->data;
