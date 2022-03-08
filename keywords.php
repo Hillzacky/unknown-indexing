@@ -98,21 +98,22 @@
   
   static function wikipedia($query, $opt=[]){
     if (strpos($query, ' ') !== false) {
-    $parts = explode(' ', $query);
-    $code = array_shift($parts);
-    $query = implode(' ', $parts);
-    $response = static::req("https://$code.wikipedia.org/w/api.php?action=opensearch&search=".urlencode($query), $opt);
-    $json = json_decode($response);
-    for ($i = 0; $i < count($json[1]); $i++) {
-      $key = $json[1][$i];
-      $description = $json[2][$i];
-      $url = $json[3][$i];
-      $data[] = ['keyword'=>$key,'desc'=>$description,'url'=>$url];
-    }
-    if (count($json[1]) === 0) {
-      $data = ['result'=>'No search suggestions found. Search Wikipedia.'.$code.' for '.$query];
-    }
-    return $data;
+      $parts = explode(' ', $query);
+      $code = array_shift($parts);
+      $query = implode(' ', $parts);
+      $response = static::req("https://$code.wikipedia.org/w/api.php?action=opensearch&search=".urlencode($query), $opt);
+      $json = json_decode($response);
+      for ($i = 0; $i < count($json[1]); $i++) {
+        $key = $json[1][$i];
+        $description = $json[2][$i];
+        $url = $json[3][$i];
+        $data[] = ['keyword'=>$key,'desc'=>$description,'url'=>$url];
+      }
+      if (count($json[1]) === 0) {
+        $data = ['result'=>'No search suggestions found. Search Wikipedia.'.$code.' for '.$query];
+      }
+      return $data;
+    } else { return false; }
   }
   
   static function wolframalpha($query, $opt=[]){
