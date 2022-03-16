@@ -26,6 +26,11 @@
     return $data;
   }
   
+  static function rankMath($lang='id',$query){
+    $response = file_get_contents("https://rankmathapi.com/ltkw/v1/?locale=$lang&keyword=$query");
+    return json_decode($response);
+  }
+  
   static function amazon($query, $opt=[]){
     $response = static::req('https://completion.amazon.com/search/complete?mkt=1&search-alias=aps&q='.urlencode($query), $opt);
     return json_decode($response)[1];
